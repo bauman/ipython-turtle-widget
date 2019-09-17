@@ -43,10 +43,10 @@ class Turtle(widgets.DOMWidget):
     _turtle_width = Int(10).tag(sync=True)
     _turtle_location_x = Float(0.0).tag(sync=True)
     _turtle_location_y = Float(0.0).tag(sync=True)
-    _turtle_heading = Float(90.0).tag(sync=True)
+    _turtle_heading = Float(00.0).tag(sync=True)
 
-    _turtle_heading_x = Float(0).tag(sync=True)
-    _turtle_heading_y = Float(1).tag(sync=True)
+    _turtle_heading_x = Float(1).tag(sync=True)
+    _turtle_heading_y = Float(0).tag(sync=True)
 
     _line = Unicode('').tag(sync=True)
     _current_color = "Black"
@@ -65,8 +65,8 @@ class Turtle(widgets.DOMWidget):
         self._turtle_location_x = 0
         self._turtle_location_y = 0
         self._turtle_heading = 90.0
-        self._turtle_heading_x = 0.0
-        self._turtle_heading_y = 1.0
+        self._turtle_heading_x = 1.0
+        self._turtle_heading_y = 0.0
 
     def position(self):
         return self._turtle_location_x, self._turtle_location_y
@@ -95,7 +95,22 @@ class Turtle(widgets.DOMWidget):
     def heading(self):
         return self._turtle_heading
 
-    def left(self, degree):
+    def goto(self, x, y=None):
+        if y is None:
+            y = x[1]
+            x = x[0]
+        self._turtle_location_x = float(x)
+        self._turtle_location_y = float(y)
+
+    def setpos(self, x, y=None):
+        return self.goto(x, y)
+
+    def setposition(self, x, y=None):
+        return self.goto(x, y)
+
+    def left(self, degree=None):
+        if degree is None:
+            degree = 90
         self._turtle_heading += degree
         self._turtle_heading = self._turtle_heading % 360
 
@@ -105,7 +120,9 @@ class Turtle(widgets.DOMWidget):
         self._turtle_heading_x = hx
         self._turtle_heading_y = hy
 
-    def right(self, degree):
+    def right(self, degree=None):
+        if degree is None:
+            degree = 90
         self.left(-degree)
 
     def penup(self):
@@ -128,6 +145,8 @@ class Turtle(widgets.DOMWidget):
 
     def reset(self):
         self._reset()
+        self.pencolor(0, 0, 0)
+        self.forward(0)
         self._line = 'clear'
 
     def pencolor(self,r=-1,g=-1,b=-1):
@@ -142,3 +161,4 @@ class Turtle(widgets.DOMWidget):
         else:
             self._current_color = ""
             self._current_color_rgb = (r,g,b)
+        self.forward(0)
